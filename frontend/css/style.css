@@ -10,79 +10,95 @@ body {
     line-height: 1.5;
 }
 
-header {
+.cabecalho{
     background-color: #222;
     color: #fff;
     padding: 24px;
 }
 
-header h1 {
+.cabecalho h1{
     margin: 0;
 }
 
-header p {
+.cabecalho p{
     margin-bottom: 16px;
 }
 
-nav ul {
+.menu ul {
     padding: 0;
     margin: 0;
     list-style: none;
 }
 
-nav li {
+.menu li {
     display: inline-block;
     margin-right: 16px;
 }
 
-nav a {
+.menu a {
     color: #fff;
     text-decoration: none;
 }
 
-main {
+.manu a:hover{
+    text-decoration: underline;
+}
+
+.manu a:active{
+    opacity: 0.7;
+}
+
+.conteudo {
     max-width: 900px;
     margin: 24px auto;
     padding: 0 16px;
 }
 
-section {
+.card {
     background-color: #fff;
     margin-bottom: 24px;
     padding: 24px;
     border-radius: 8px;
 }
 
-section h2 {
+.card h2 {
     margin-top: 0;
 }
 
-form {
+.formulario {
     display: block;
 }
 
-label {
+.formulario label {
     display: block;
     margin-top: 12px;
     margin-bottom: 4px;
     font-weight: bold;
 }
 
-input,
-textarea {
+.formulario input[type=number],
+.formulario textarea {
     width: 100%;
     padding: 8px;
     font-size: 16px;
 }
 
-button {
+.formulario button {
     margin-top: 16px;
     margin-right: 8px;
     padding: 8px 16px;
     cursor: pointer;
 }
 
-footer {
+.formulario button:hover {
+    opacity: 0.85;
+}
+
+.formulario button:active {
+    transform: scale(0.98);
+}
+
+.rodape {
     text-align: center;
     padding: 16px;
     color: #666;

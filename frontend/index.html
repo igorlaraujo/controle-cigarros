@@ -28,7 +28,29 @@
 
     <section id="novo-registro">
         <h2>Novo registro</h2>
-        <p>Área onde será criado o formulário para registrar um cigarro.</p>
+
+        <form id="form-registro">
+            <label for="quantidade">Quantidade de cigarros</label>
+            <input
+                type="number"
+                id="quantidade"
+                name="quantidade"
+                min="1"
+                required
+                placeholder="Ex: 1"
+            >
+            <label for="observacao">Observação</label>
+            <textarea
+            id="observacao"
+            name="observacao"
+            rows="4"
+            maxlength="200"
+            placeholder="Ex: depois do almoço, ansiedade, vontade forte..."
+            ></textarea>
+            <button type="submit">Registrar</button>
+            <button type="reset">Limpar</button>
+
+        </form>
     </section>
 
     <section id="registros-hoje">

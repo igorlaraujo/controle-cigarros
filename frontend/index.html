@@ -23,8 +23,8 @@
 <main class="conteudo">
     <section id="resumo" class="card">
         <h2>Resumo de hoje</h2>
-        <p>Total de cigarros registrados hoje: 0</p>
-        <p>Total de registros hoje: 0</p>
+        <p>Total de cigarros registrados hoje: <span id="total-cigarros">0</span></p>
+        <p>Total de registros hoje: <span id="total-registros">0</span></p>
     </section>
 
     <section id="novo-registro" class="card">
@@ -48,10 +48,11 @@
             maxlength="200"
             placeholder="Ex: depois do almoço, ansiedade, vontade forte..."
             ></textarea>
-            <button type="submit">Registrar</button>
+            <button type="button" onclick="registrarConsumo()">Registrar</button>
             <button type="reset">Limpar</button>
 
         </form>
+        <p id="mensagem-formulario"></p>
     </section>
 
     <section id="registros-hoje" class="card">
@@ -64,5 +65,8 @@
 <footer class="rodape">
     <p>&copy; 2026 Controle de Cigarros</p>
 </footer>
+
+<script src="js/app.js"></script>
+
 </body>
 </html>

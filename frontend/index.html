@@ -22,7 +22,7 @@
 
 <main class="conteudo">
     <section id="resumo" class="card">
-        <h2>Resumo de hoje</h2>
+        <h2>Resumo do dia</h2>
         <p>Total de cigarros registrados hoje: <span id="total-cigarros">0</span></p>
         <p>Total de registros hoje: <span id="total-registros">0</span></p>
     </section>
@@ -31,6 +31,13 @@
         <h2>Novo registro</h2>
 
         <form id="form-registro" class="formulario">
+            <label for="data-registro">Data do registro</label>
+            <input
+                    type="date"
+                    id="data-registro"
+                    name="data-registro"
+                    required
+            >
             <label for="quantidade">Quantidade de cigarros</label>
             <input
                 type="number"
@@ -56,7 +63,7 @@
     </section>
 
     <section id="registros-hoje" class="card">
-        <h2>Registros de hoje</h2>
+        <h2>Registros de do dia</h2>
         <div id="lista-registros">
             <p>Nenhum registro carregado ainda.</p>
         </div>

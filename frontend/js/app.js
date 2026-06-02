@@ -2,20 +2,35 @@ const API_URL = "http://127.0.0.1:8000";
 
 let totalCigarros = 0;
 let totalRegistros = 0;
+let idRegistroParaExcluir = null;
 
 const formulario = document.getElementById("form-registro");
+const campoDataRegistro = document.getElementById("data-registro");
 const campoQuantidade = document.getElementById("quantidade");
 const campoObservacao = document.getElementById("observação");
+
 const elementoTotalCigarros = document.getElementById("total-cigarros");
 const elementoTotalRegistros = document.getElementById("total-registros");
 const mensagemFormulario = document.getElementById("mensagem-formulário");
 const listaRegistros = document.getElementById("lista-registros");
+
 const modalConfirmacao = document.getElementById("modal-confirmação");
 const botaoConfirmarExclusao = document.getElementById("botao-confirmar-exclusao");
 const botaoCancelarExclusao = document.getElementById("botao-cancelar-exclusao");
 
-let idRegistroParaExcluir = null;
+function obterDataHojeFormatada() {
+    const hoje = new Date();
 
+    const ano = hoje.getFullYear();
+    const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+    const dia = String(hoje.getDate()).padStart(2, "0");
+
+    return `${ano}-${mes}-${dia}`;
+}
+
+function inicializarDataRegistro() {
+    campoDataRegistro.value = obterDataHojeFormatada();
+}
 
 function exibirMensagemFormulario(texto, tipo) {
     mensagemFormulario.textContent = texto;
@@ -29,8 +44,14 @@ function exibirMensagemFormulario(texto, tipo) {
     }
 }
 
-function carregarResumoHoje() {
-    fetch(`${API_URL}/resumo/hoje`)
+function carregarResumoPorData() {
+    const dataRegistro = campoDataRegistro.value;
+
+    if (!dataRegistro) {
+        return;
+    }
+
+    fetch(`${API_URL}/resumo/data/${dataRegistro}`)
         .then(function (resposta) {
             return resposta.json();
         })
@@ -47,8 +68,14 @@ function carregarResumoHoje() {
         });
 }
 
-function carregarRegistrosHoje() {
-    fetch(`${API_URL}/registros/hoje`)
+function carregarRegistrosPorData() {
+    const dataRegistro = campoDataRegistro.value;
+
+    if (!dataRegistro) {
+        return;
+    }
+
+    fetch(`${API_URL}/registros/data/${dataRegistro}`)
         .then(function (resposta) {
             return resposta.json();
         })
@@ -57,7 +84,7 @@ function carregarRegistrosHoje() {
 
             if (registros.length === 0) {
                 const mensagem = document.createElement("p");
-                mensagem.textContent = "Nenhum registro encontrado para hoje.";
+                mensagem.textContent = "Nenhum registro encontrado para esta data.";
                 listaRegistros.appendChild(mensagem);
                 return;
             }
@@ -86,7 +113,7 @@ function carregarRegistrosHoje() {
 
                 const botaoExcluir = document.createElement("button");
                 botaoExcluir.textContent = "Excluir";
-                botaoExcluir.classList.add("botao-excluir");
+                botaoExcluir.classList.add("botão-excluir");
 
                 botaoExcluir.addEventListener("click", function () {
                     abrirModalExclusao(registro.id);
@@ -117,7 +144,7 @@ function fecharModalExclusao() {
 }
 
 function confirmarExclusaoRegistro() {
-    if (!idRegistroParaExcluir) {
+    if (idRegistroParaExcluir === null) {
         return;
     }
 
@@ -136,8 +163,8 @@ function confirmarExclusaoRegistro() {
 
             fecharModalExclusao();
 
-            carregarResumoHoje();
-            carregarRegistrosHoje();
+            carregarResumoPorData();
+            carregarRegistrosPorData();
         })
         .catch(function (erro) {
             console.error("Erro ao excluir registro:", erro);
@@ -147,15 +174,22 @@ function confirmarExclusaoRegistro() {
 }
 
 function registrarConsumo() {
+    const dataRegistro = campoDataRegistro.value;
     const quantidade = Number(campoQuantidade.value);
     const observacao = campoObservacao.value;
 
+    if (!dataRegistro) {
+        exibirMensagemFormulario("Informe uma data válida.", "erro");
+        return;
+    }
+
     if (!quantidade || quantidade <= 0) {
-        exibirMensagemFormulario("Informe uma quantidade válida.","erro");
+        exibirMensagemFormulario("Informe uma quantidade válida.", "erro");
         return;
     }
 
     const dadosRegistro = {
+        data_registro: dataRegistro,
         quantidade: quantidade,
         observacao: observacao
     };
@@ -168,6 +202,10 @@ function registrarConsumo() {
         body: JSON.stringify(dadosRegistro)
     })
         .then(function (resposta) {
+            if (!resposta.ok) {
+                throw new Error("Erro ao salvar registro.");
+            }
+
             return resposta.json();
         })
         .then(function (registroCriado) {
@@ -177,9 +215,10 @@ function registrarConsumo() {
             );
 
             formulario.reset();
+            campoDataRegistro.value = dataRegistro;
 
-            carregarResumoHoje();
-            carregarRegistrosHoje();
+            carregarResumoPorData();
+            carregarRegistrosPorData();
 
             console.log("Registro criado:", registroCriado);
         })
@@ -192,6 +231,11 @@ function registrarConsumo() {
 formulario.addEventListener("submit", function (event) {
     event.preventDefault();
     registrarConsumo();
+});
+
+campoDataRegistro.addEventListener("change", function () {
+    carregarResumoPorData();
+    carregarRegistrosPorData();
 });
 
 botaoConfirmarExclusao.addEventListener("click", function () {
@@ -208,5 +252,6 @@ modalConfirmacao.addEventListener("click", function (event) {
     }
 });
 
-carregarResumoHoje();
-carregarRegistrosHoje()
+inicializarDataRegistro();
+carregarResumoPorData();
+carregarRegistrosPorData();

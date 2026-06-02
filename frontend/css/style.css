@@ -93,6 +93,7 @@ body {
     font-weight: bold;
 }
 
+.formulario input[type="date"],
 .formulario input[type="number"],
 .formulario textarea {
     width: 100%;
@@ -105,6 +106,7 @@ body {
     font-family: Georgia, "Times New Roman", serif;
 }
 
+.formulario input[type="date"]:focus,
 .formulario input[type="number"]:focus,
 .formulario textarea:focus {
     outline: none;

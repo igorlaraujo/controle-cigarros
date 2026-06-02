@@ -10,6 +10,12 @@ const elementoTotalCigarros = document.getElementById("total-cigarros");
 const elementoTotalRegistros = document.getElementById("total-registros");
 const mensagemFormulario = document.getElementById("mensagem-formulário");
 const listaRegistros = document.getElementById("lista-registros");
+const modalConfirmacao = document.getElementById("modal-confirmação");
+const botaoConfirmarExclusao = document.getElementById("botao-confirmar-exclusao");
+const botaoCancelarExclusao = document.getElementById("botao-cancelar-exclusao");
+
+let idRegistroParaExcluir = null;
+
 
 function exibirMensagemFormulario(texto, tipo) {
     mensagemFormulario.textContent = texto;
@@ -80,10 +86,10 @@ function carregarRegistrosHoje() {
 
                 const botaoExcluir = document.createElement("button");
                 botaoExcluir.textContent = "Excluir";
-                botaoExcluir.classList.add("botão-excluir");
+                botaoExcluir.classList.add("botao-excluir");
 
                 botaoExcluir.addEventListener("click", function () {
-                    deletarRegistro(registro.id);
+                    abrirModalExclusao(registro.id);
                 });
 
                 itemRegistro.appendChild(horario);
@@ -100,14 +106,22 @@ function carregarRegistrosHoje() {
         });
 }
 
-function deletarRegistro(idRegistro) {
-    const confirmar = confirm("Deseja realmente excluir este registro?");
+function abrirModalExclusao(idRegistro) {
+    idRegistroParaExcluir = idRegistro;
+    modalConfirmacao.classList.remove("oculto");
+}
 
-    if (!confirmar) {
+function fecharModalExclusao() {
+    idRegistroParaExcluir = null;
+    modalConfirmacao.classList.add("oculto");
+}
+
+function confirmarExclusaoRegistro() {
+    if (!idRegistroParaExcluir) {
         return;
     }
 
-    fetch(`${API_URL}/registros/${idRegistro}`, {
+    fetch(`${API_URL}/registros/${idRegistroParaExcluir}`, {
         method: "DELETE"
     })
         .then(function (resposta) {
@@ -120,12 +134,15 @@ function deletarRegistro(idRegistro) {
         .then(function () {
             exibirMensagemFormulario("Registro excluído com sucesso.", "sucesso");
 
+            fecharModalExclusao();
+
             carregarResumoHoje();
             carregarRegistrosHoje();
         })
         .catch(function (erro) {
             console.error("Erro ao excluir registro:", erro);
             exibirMensagemFormulario("Erro ao excluir registro na API.", "erro");
+            fecharModalExclusao();
         });
 }
 
@@ -175,6 +192,20 @@ function registrarConsumo() {
 formulario.addEventListener("submit", function (event) {
     event.preventDefault();
     registrarConsumo();
+});
+
+botaoConfirmarExclusao.addEventListener("click", function () {
+    confirmarExclusaoRegistro();
+});
+
+botaoCancelarExclusao.addEventListener("click", function () {
+    fecharModalExclusao();
+});
+
+modalConfirmacao.addEventListener("click", function (event) {
+    if (event.target === modalConfirmacao) {
+        fecharModalExclusao();
+    }
 });
 
 carregarResumoHoje();

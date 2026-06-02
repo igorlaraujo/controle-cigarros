@@ -11,6 +11,18 @@ const elementoTotalRegistros = document.getElementById("total-registros");
 const mensagemFormulario = document.getElementById("mensagem-formulário");
 const listaRegistros = document.getElementById("lista-registros");
 
+function exibirMensagemFormulario(texto, tipo) {
+    mensagemFormulario.textContent = texto;
+
+    mensagemFormulario.classList.remove("mensagem-sucesso", "mensagem-erro");
+
+    if (tipo === "sucesso") {
+        mensagemFormulario.classList.add("mensagem-sucesso");
+    } else if (tipo === "erro") {
+        mensagemFormulario.classList.add("mensagem-erro");
+    }
+}
+
 function carregarResumoHoje() {
     fetch(`${API_URL}/resumo/hoje`)
         .then(function (resposta) {
@@ -25,7 +37,7 @@ function carregarResumoHoje() {
         })
         .catch(function (erro) {
             console.error("Erro ao carregar resumo:", erro);
-            mensagemFormulario.textContent = "Erro ao carregar resumo da API.";
+            exibirMensagemFormulario("Erro ao carregar resumo da API.", "erro");
         });
 }
 
@@ -84,7 +96,7 @@ function registrarConsumo() {
     const observacao = campoObservacao.value;
 
     if (!quantidade || quantidade <= 0) {
-        mensagemFormulario.textContent = "Informe uma quantidade válida.";
+        exibirMensagemFormulario("Informe uma quantidade válida.","erro");
         return;
     }
 
@@ -104,8 +116,10 @@ function registrarConsumo() {
             return resposta.json();
         })
         .then(function (registroCriado) {
-            mensagemFormulario.textContent =
-                "Registro salvo com sucesso: " + registroCriado.quantidade + " cigarro(s).";
+            exibirMensagemFormulario(
+                "Registro salvo com sucesso: " + registroCriado.quantidade + " cigarro(s).",
+                "sucesso"
+            );
 
             formulario.reset();
 
@@ -116,7 +130,7 @@ function registrarConsumo() {
         })
         .catch(function (erro) {
             console.error("Erro ao salvar registro:", erro);
-            mensagemFormulario.textContent = "Erro ao salvar registro na API.";
+            exibirMensagemFormulario("Erro ao salvar registro na API.", "erro");
         });
 }
 

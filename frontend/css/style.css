@@ -131,3 +131,16 @@ body {
 .registro-item p {
     margin: 4px 0;
 }
+
+.mensagem {
+    margin-top: 16px;
+    font-weight: bold;
+}
+
+.mensagem-sucesso {
+    color: #1b7f3a;
+}
+
+.mensagem-erro {
+    color: #b42318;
+}

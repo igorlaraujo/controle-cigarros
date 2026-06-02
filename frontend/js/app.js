@@ -44,18 +44,29 @@ function carregarRegistrosHoje() {
                 return;
             }
 
-            for (let i = 0; i < registros.length; i++) {
+            for (let i = registros.length - 1; i >= 0; i--) {
                 const registro = registros[i];
 
                 const itemRegistro = document.createElement("article");
                 itemRegistro.classList.add("registro-item");
 
+                const dataHora = new Date(registro.data_hora);
+
+                const horario = document.createElement("p");
+                horario.textContent = "Horário: " + dataHora.toLocaleString("pt-BR");
+
                 const quantidade = document.createElement("p");
                 quantidade.textContent = "Quantidade: " + registro.quantidade;
 
                 const observacao = document.createElement("p");
-                observacao.textContent = "Observação: " + registro.observacao;
 
+                if (registro.observacao) {
+                    observacao.textContent = "Observação: " + registro.observacao;
+                } else {
+                    observacao.textContent = "Observação: sem observação.";
+                }
+
+                itemRegistro.appendChild(horario);
                 itemRegistro.appendChild(quantidade);
                 itemRegistro.appendChild(observacao);
 

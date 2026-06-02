@@ -13,6 +13,7 @@ const elementoTotalCigarros = document.getElementById("total-cigarros");
 const elementoTotalRegistros = document.getElementById("total-registros");
 const mensagemFormulario = document.getElementById("mensagem-formulário");
 const listaRegistros = document.getElementById("lista-registros");
+const listaHistorico = document.getElementById("lista-histórico");
 
 const modalConfirmacao = document.getElementById("modal-confirmação");
 const botaoConfirmarExclusao = document.getElementById("botao-confirmar-exclusao");
@@ -133,6 +134,69 @@ function carregarRegistrosPorData() {
         });
 }
 
+function carregarHistoricoGeral() {
+    fetch(`${API_URL}/registros`)
+        .then(function (resposta) {
+            return resposta.json();
+        })
+        .then(function (registros) {
+            listaHistorico.textContent = "";
+
+            if (registros.length === 0) {
+                const mensagem = document.createElement("p");
+                mensagem.textContent = "Nenhum registro encontrado no histórico.";
+                listaHistorico.appendChild(mensagem);
+                return;
+            }
+
+            for (let i = registros.length - 1; i >= 0; i--) {
+                const registro = registros[i];
+
+                const itemRegistro = document.createElement("article");
+                itemRegistro.classList.add("registro-item");
+
+                const dataHora = new Date(registro.data_hora);
+
+                const data = document.createElement("p");
+                data.textContent = "Data: " + dataHora.toLocaleDateString("pt-BR");
+
+                const horario = document.createElement("p");
+                horario.textContent = "Horário: " + dataHora.toLocaleTimeString("pt-BR");
+
+                const quantidade = document.createElement("p");
+                quantidade.textContent = "Quantidade: " + registro.quantidade;
+
+                const observacao = document.createElement("p");
+
+                if (registro.observacao) {
+                    observacao.textContent = "Observação: " + registro.observacao;
+                } else {
+                    observacao.textContent = "Observação: sem observação.";
+                }
+
+                const botaoExcluir = document.createElement("button");
+                botaoExcluir.textContent = "Excluir";
+                botaoExcluir.classList.add("botão-excluir");
+
+                botaoExcluir.addEventListener("click", function () {
+                    abrirModalExclusao(registro.id);
+                });
+
+                itemRegistro.appendChild(data);
+                itemRegistro.appendChild(horario);
+                itemRegistro.appendChild(quantidade);
+                itemRegistro.appendChild(observacao);
+                itemRegistro.appendChild(botaoExcluir);
+
+                listaHistorico.appendChild(itemRegistro);
+            }
+        })
+        .catch(function (erro) {
+            console.error("Erro ao carregar histórico geral:", erro);
+            listaHistorico.textContent = "Erro ao carregar histórico geral da API.";
+        });
+}
+
 function abrirModalExclusao(idRegistro) {
     idRegistroParaExcluir = idRegistro;
     modalConfirmacao.classList.remove("oculto");
@@ -165,6 +229,7 @@ function confirmarExclusaoRegistro() {
 
             carregarResumoPorData();
             carregarRegistrosPorData();
+            carregarHistoricoGeral();
         })
         .catch(function (erro) {
             console.error("Erro ao excluir registro:", erro);
@@ -219,6 +284,7 @@ function registrarConsumo() {
 
             carregarResumoPorData();
             carregarRegistrosPorData();
+            carregarHistoricoGeral();
 
             console.log("Registro criado:", registroCriado);
         })
@@ -255,3 +321,4 @@ modalConfirmacao.addEventListener("click", function (event) {
 inicializarDataRegistro();
 carregarResumoPorData();
 carregarRegistrosPorData();
+carregarHistoricoGeral();

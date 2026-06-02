@@ -1,3 +1,5 @@
+const API_URL = "http://127.0.0.1:8000";
+
 let totalCigarros = 0;
 let totalRegistros = 0;
 
@@ -7,6 +9,24 @@ const campoObservacao = document.getElementById("observação");
 const elementoTotalCigarros = document.getElementById("total-cigarros");
 const elementoTotalRegistros = document.getElementById("total-registros");
 const mensagemFormulario = document.getElementById("mensagem-formulário");
+
+function carregarResumoHoje() {
+    fetch(`${API_URL}/resumo/hoje`)
+        .then(function (resposta) {
+            return resposta.json();
+        })
+        .then(function (dados) {
+            totalCigarros = dados.total_cigarros;
+            totalRegistros = dados.total_registros;
+
+            elementoTotalCigarros.textContent = totalCigarros;
+            elementoTotalRegistros.textContent = totalRegistros;
+        })
+        .catch(function (erro) {
+            console.error("Erro ao carregar resumo:", erro);
+            mensagemFormulario.textContent = "Erro ao carregar resumo da API.";
+        });
+}
 
 function registrarConsumo() {
     const quantidade = Number(campoQuantidade.value);
@@ -36,3 +56,5 @@ formulario.addEventListener("submit", function (event) {
     event.preventDefault();
     registrarConsumo();
 });
+
+carregarResumoHoje();

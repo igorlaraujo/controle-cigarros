@@ -77,19 +77,36 @@ function registrarConsumo() {
         return;
     }
 
-    totalCigarros = totalCigarros + quantidade;
-    totalRegistros = totalRegistros + 1;
+    const dadosRegistro = {
+        quantidade: quantidade,
+        observacao: observacao
+    };
 
-    elementoTotalCigarros.textContent = totalCigarros;
-    elementoTotalRegistros.textContent = totalRegistros;
+    fetch(`${API_URL}/registros`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dadosRegistro)
+    })
+        .then(function (resposta) {
+            return resposta.json();
+        })
+        .then(function (registroCriado) {
+            mensagemFormulario.textContent =
+                "Registro salvo com sucesso: " + registroCriado.quantidade + " cigarro(s).";
 
-    mensagemFormulario.textContent =
-        "Registro adicionado: " + quantidade + " cigarro(s).";
+            formulario.reset();
 
-    console.log("Quantidade:", quantidade);
-    console.log("Observação:", observacao);
+            carregarResumoHoje();
+            carregarRegistrosHoje();
 
-    formulario.reset();
+            console.log("Registro criado:", registroCriado);
+        })
+        .catch(function (erro) {
+            console.error("Erro ao salvar registro:", erro);
+            mensagemFormulario.textContent = "Erro ao salvar registro na API.";
+        });
 }
 
 formulario.addEventListener("submit", function (event) {

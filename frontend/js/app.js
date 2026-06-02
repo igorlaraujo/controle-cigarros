@@ -78,9 +78,18 @@ function carregarRegistrosHoje() {
                     observacao.textContent = "Observação: sem observação.";
                 }
 
+                const botaoExcluir = document.createElement("button");
+                botaoExcluir.textContent = "Excluir";
+                botaoExcluir.classList.add("botão-excluir");
+
+                botaoExcluir.addEventListener("click", function () {
+                    deletarRegistro(registro.id);
+                });
+
                 itemRegistro.appendChild(horario);
                 itemRegistro.appendChild(quantidade);
                 itemRegistro.appendChild(observacao);
+                itemRegistro.appendChild(botaoExcluir);
 
                 listaRegistros.appendChild(itemRegistro);
             }
@@ -88,6 +97,35 @@ function carregarRegistrosHoje() {
         .catch(function (erro) {
             console.error("Erro ao carregar registros:", erro);
             listaRegistros.textContent = "Erro ao carregar registros da API.";
+        });
+}
+
+function deletarRegistro(idRegistro) {
+    const confirmar = confirm("Deseja realmente excluir este registro?");
+
+    if (!confirmar) {
+        return;
+    }
+
+    fetch(`${API_URL}/registros/${idRegistro}`, {
+        method: "DELETE"
+    })
+        .then(function (resposta) {
+            if (!resposta.ok) {
+                throw new Error("Erro ao excluir registro.");
+            }
+
+            return resposta.json();
+        })
+        .then(function () {
+            exibirMensagemFormulario("Registro excluído com sucesso.", "sucesso");
+
+            carregarResumoHoje();
+            carregarRegistrosHoje();
+        })
+        .catch(function (erro) {
+            console.error("Erro ao excluir registro:", erro);
+            exibirMensagemFormulario("Erro ao excluir registro na API.", "erro");
         });
 }
 

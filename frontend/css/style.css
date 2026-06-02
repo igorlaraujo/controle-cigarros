@@ -171,3 +171,23 @@ body {
 .mensagem-erro {
     color: #b91c1c;
 }
+
+.botao-excluir {
+    margin-top: 12px;
+    padding: 8px 12px;
+    border: 1px solid #8a2f20;
+    border-radius: 8px;
+    background-color: #8a2f20;
+    color: #fffaf3;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.botao-excluir:hover {
+    opacity: 0.85;
+}
+
+.botao-excluir:active {
+    transform: scale(0.98);
+}

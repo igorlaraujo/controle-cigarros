@@ -119,3 +119,15 @@ body {
     padding: 16px;
     color: #666;
 }
+
+.registro-item {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.registro-item p {
+    margin: 4px 0;
+}

@@ -9,6 +9,7 @@ const campoObservacao = document.getElementById("observação");
 const elementoTotalCigarros = document.getElementById("total-cigarros");
 const elementoTotalRegistros = document.getElementById("total-registros");
 const mensagemFormulario = document.getElementById("mensagem-formulário");
+const listaRegistros = document.getElementById("lista-registros");
 
 function carregarResumoHoje() {
     fetch(`${API_URL}/resumo/hoje`)
@@ -25,6 +26,45 @@ function carregarResumoHoje() {
         .catch(function (erro) {
             console.error("Erro ao carregar resumo:", erro);
             mensagemFormulario.textContent = "Erro ao carregar resumo da API.";
+        });
+}
+
+function carregarRegistrosHoje() {
+    fetch(`${API_URL}/registros/hoje`)
+        .then(function (resposta) {
+            return resposta.json();
+        })
+        .then(function (registros) {
+            listaRegistros.textContent = "";
+
+            if (registros.length === 0) {
+                const mensagem = document.createElement("p");
+                mensagem.textContent = "Nenhum registro encontrado para hoje.";
+                listaRegistros.appendChild(mensagem);
+                return;
+            }
+
+            for (let i = 0; i < registros.length; i++) {
+                const registro = registros[i];
+
+                const itemRegistro = document.createElement("article");
+                itemRegistro.classList.add("registro-item");
+
+                const quantidade = document.createElement("p");
+                quantidade.textContent = "Quantidade: " + registro.quantidade;
+
+                const observacao = document.createElement("p");
+                observacao.textContent = "Observação: " + registro.observacao;
+
+                itemRegistro.appendChild(quantidade);
+                itemRegistro.appendChild(observacao);
+
+                listaRegistros.appendChild(itemRegistro);
+            }
+        })
+        .catch(function (erro) {
+            console.error("Erro ao carregar registros:", erro);
+            listaRegistros.textContent = "Erro ao carregar registros da API.";
         });
 }
 
@@ -58,3 +98,4 @@ formulario.addEventListener("submit", function (event) {
 });
 
 carregarResumoHoje();
+carregarRegistrosHoje()

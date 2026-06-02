@@ -25,6 +25,7 @@ Base.metadata.create_all(bind=engine)
 class CriarRegistroCigarro(BaseModel):
     quantidade: int = Field(gt=0)
     observacao: Optional[str] = None
+    data_registro: Optional[date] = None
 
 class AtualizarRegistroCigarro(BaseModel):
     quantidade: int = Field(gt=0)
@@ -52,9 +53,16 @@ def inicio():
 
 @app.post("/registros", response_model=RegistroCigarroResposta)
 def criar_registro(dados: CriarRegistroCigarro, db: Session = Depends(get_db)):
+    data_hora_registro = datetime.now().replace(microsecond=0)
+
+    if dados.data_registro:
+        data_hora_registro = datetime.combine(
+            dados.data_registro,
+            datetime.now().time()
+        ).replace(microsecond=0)
 
     novo_registro = RegistroCigarroDB(
-        data_hora=datetime.now().replace(microsecond=0),
+        data_hora=data_hora_registro,
         quantidade=dados.quantidade,
         observacao=dados.observacao,
     )
